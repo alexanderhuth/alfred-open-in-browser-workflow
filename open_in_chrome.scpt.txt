@@ -1,0 +1,79 @@
+tell application "System Events"
+	set frontApp to displayed name of first process whose frontmost is true
+end tell
+
+if frontApp is "Safari" then
+	tell application "Safari"
+		try
+			set currentSafariURL to URL of current tab of front window
+			set pageName to name of current tab of front window
+		on error
+			return "There are no pages open in Safari at the moment"
+		end try
+	end tell
+	
+	tell application "Google Chrome"
+		activate
+		
+		# If Chrome has no windows open make a new window
+		if (count of windows) is 0 then make new window
+		set currentChromeURL to URL of active tab of front window
+		
+		# Don't do anything if the page is already open in Chrome
+		if currentChromeURL is not currentSafariURL then
+			
+			# If the active tab is in use make a new tab
+			if currentChromeURL is not "chrome://newtab/" then
+				make new tab at end of tabs of front window
+			end if
+			
+			# Open the URL from Safari
+			set URL of active tab of front window to currentSafariURL
+			
+		else
+			return "The current Safari tab is already open in Chrome"
+		end if
+	end tell
+	
+	# Enable the following line to post notifications after sending URLs to Chrome
+	--return "Opening '" & pageName & "' in Chrome"
+	
+else if frontApp is "Chromium" then
+	tell application "Chromium"
+		try
+			set currentChromiumURL to URL of active tab of front window
+			set pageName to title of active tab of front window
+		on error
+			return "There are no pages open in Chromium at the moment"
+		end try
+	end tell
+	
+	tell application "Google Chrome"
+		activate
+		
+		# If Chrome has no windows open make a new window
+		if (count of windows) is 0 then make new window
+		set currentChromeURL to URL of active tab of front window
+		
+		# Don't do anything if the page is already open in Chrome
+		if currentChromeURL is not currentChromiumURL then
+			
+			# If the active tab is in use make a new tab
+			if currentChromeURL is not "chrome://newtab/" then
+				make new tab at end of tabs of front window
+			end if
+			
+			# Open the URL from Chromium
+			set URL of active tab of front window to currentChromiumURL
+			
+		else
+			return "The current Chromium tab is already open in Chrome"
+		end if
+	end tell
+	
+	# Enable the following line to post notifications after sending URLs to Chrome
+	--return "Opening '" & pageName & "' in Chrome"
+	
+else
+	return "No active browser at the moment"
+end if

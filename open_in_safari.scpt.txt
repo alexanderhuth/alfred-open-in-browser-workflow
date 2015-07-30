@@ -1,0 +1,103 @@
+tell application "System Events"
+	set frontApp to displayed name of first process whose frontmost is true
+end tell
+
+if frontApp is "Chromium" then
+	tell application "Chromium"
+		try
+			set currentChromiumURL to URL of active tab of front window
+			set pageName to title of active tab of front window
+		on error
+			return "There are no pages open in Chromium at the moment"
+		end try
+	end tell
+	
+	tell application "Safari"
+		activate
+		
+		# If Safari has no windows make a new window
+		if (count of windows) is 0 then
+			make new document with properties {URL:currentChromiumURL}
+		else
+			# Safari has a bug which makes it return the wrong count of windows
+			# Catch that with a try block
+			try
+				set currentSafariURL to URL of current tab of front window
+			on error
+				make new document with properties {URL:currentChromiumURL}
+			end try
+			
+			try
+				# If the page is already open in Safari then say so and stop
+				if currentSafariURL is currentChromiumURL then
+					return "The current Chromium tab is already open in Safari"
+				end if
+				
+				# If the current tab's in use make a new tab
+				if currentSafariURL contains "http" then
+					open location currentChromiumURL
+				else
+					# Then the current tab is showing Bookmarks, Top Sites etc.
+					set URL of current tab of front window to currentChromiumURL
+				end if
+			on error
+				# If we got an error then current tab is an empty page
+				set URL of current tab of front window to currentChromiumURL
+			end try
+		end if
+	end tell
+	
+	# Enable the following line to post notifications after sending URLs to Safari
+	--return "Opening '" & pageName & "' in Safari"
+	
+else if frontApp is "Google Chrome" then
+	tell application "Google Chrome"
+		try
+			set currentChromeURL to URL of active tab of front window
+			set pageName to title of active tab of front window
+		on error
+			return "There are no pages open in Chrome at the moment"
+		end try
+	end tell
+	
+	tell application "Safari"
+		activate
+		
+		# If Safari has no windows make a new window
+		if (count of windows) is 0 then
+			make new document with properties {URL:currentChromeURL}
+		else
+			# Safari has a bug which makes it return the wrong count of windows
+			# Catch that with a try block
+			try
+				set currentSafariURL to URL of current tab of front window
+			on error
+				make new document with properties {URL:currentChromeURL}
+			end try
+			
+			try
+				# If the page is already open in Safari then say so and stop
+				if currentSafariURL is currentChromeURL then
+					return "The current Chrome tab is already open in Safari"
+				end if
+				
+				# If the current tab's in use make a new tab
+				if currentSafariURL contains "http" then
+					open location currentChromeURL
+				else
+					# Then the current tab is showing Bookmarks, Top Sites etc.
+					set URL of current tab of front window to currentChromeURL
+				end if
+			on error
+				# If we got an error then current tab is an empty page
+				set URL of current tab of front window to currentChromeURL
+			end try
+		end if
+	end tell
+	
+	# Enable the following line to post notifications after sending URLs to Safari
+	--return "Opening '" & pageName & "' in Safari"
+	
+else
+	return "No active browser at the moment"
+end if
