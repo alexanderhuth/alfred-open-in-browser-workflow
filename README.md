@@ -23,7 +23,7 @@ The workflow will not do anything when neither Safari, Chromium or Chrome are th
 You can turn off all notifications by removing or disconnecting the **Post Notification** object in the Alfred workflow window. If you only want to receive specific notifications, enable/disable them by commenting them out in the AppleScript.
 
 ## Download
-[Open in Browser Workflow for Alfred](https://github.com/alexanderhuth/alfred-open-in-browser-workflow/raw/master/openInBrowser.alfredworkflow)
+[Open in Browser Workflow for Alfred](https://github.com/alexanderhuth/alfred-open-in-browser-workflow/releases/download/v1.0/openInBrowser.alfredworkflow)
 
 ## Version History
 ### 1.0 - July 30, 2015
